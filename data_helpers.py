@@ -47,24 +47,6 @@ def load_data_and_labels(positive_data_file, negative_data_file):
     y = np.concatenate([positive_labels, negative_labels], 0)
     return [x_text, y]
 
-# def build_word_dataset(step, word_dict, document_max_len):
-#     if step == "train":
-#         df = pd.read_csv(TRAIN_PATH, names=["class", "content"])
-#     else:
-#         df = pd.read_csv(TEST_PATH, names=["class", "content"])
-#
-#     # Shuffle dataframe
-#     df = df.sample(frac=1)
-#     x = list(map(lambda d: jieba.cut(d,cut_all=False), df["content"]))
-#     x = list(map(lambda d: list(map(lambda w: word_dict.get(w, word_dict["<unk>"]), d)), x))
-#     x = list(map(lambda d: d + [word_dict["<eos>"]], x))
-#     x = list(map(lambda d: d[:document_max_len], x))
-#     x = list(map(lambda d: d + (document_max_len - len(d)) * [word_dict["<pad>"]], x))
-#
-#     y = list(map(lambda d: d - 1, list(df["class"])))
-#
-#     return x, y
-
 class InputExample():
     def __init__(self,text,label):
         self.text=text
@@ -107,30 +89,10 @@ class data_name():
 
 
     def get_train_example(self):
-        # class_num = {}
-        # df=pd.read_csv(os.path.join(self.data_dir,"train.csv"))
-        # # self.df=pd.read_csv("./data/input/test.csv")
-        # print(df.head())
-        # for index,row in df.iterrows():
-        #     if row[0] not in class_num:
-        #         class_num[row[0]]=1
-        #     else:
-        #         class_num[row[0]]=class_num[row[0]]+1
-        # print("类别数目",class_num)
         self.statistics_data("train")
         return self.create_examples("train")
 
     def get_valid_example(self):
-        # class_num = {}
-        # df=pd.read_csv(os.path.join(self.data_dir,"valid.csv"))
-        # # self.df=pd.read_csv("./data/input/test.csv")
-        # print(df.head())
-        # for index,row in df.iterrows():
-        #     if row[0] not in class_num:
-        #         class_num[row[0]]=1
-        #     else:
-        #         class_num[row[0]]=class_num[row[0]]+1
-        # print("类别数目",class_num)
         self.statistics_data("valid")
         return self.create_examples("valid")
 
@@ -152,24 +114,6 @@ class data_name():
 
 
     def create_examples(self,set_type):
-        # text_list=[]
-        # label_list=[]
-        # df = pd.read_csv(os.path.join(self.data_dir, set_type + ".csv"))
-        # # word_dict={'我':1,'是':2,'<unk>':3,'<eos>':4,'<pad>':5}
-        # for index,row in df.iterrows():
-        #     text=row[1]
-        #     # x = list(map(lambda d: list(map(lambda w: word_dict.get(w, word_dict["<unk>"]), d)), text))
-        #     # x = list(map(lambda d: d + [word_dict["<eos>"]], x))
-        #     # x = list(map(lambda d: d[:10], x))
-        #     # x = list(map(lambda d: d + (10 - len(d)) * [word_dict["<pad>"]], x))
-        #     label=row[0]
-        #     if label not in self.label_id:
-        #         self.label_id[label]=len(self.label_id)+1
-        #     text_list.append(text)
-        #     label_list.append(label)
-            # examples.append(InputExample(text=text,label=self.label_id[label]))
-        # return text_list,label_list
-
         if set_type == "train":
             df = pd.read_csv(os.path.join(self.data_dir,"train.csv"), names=["class", "content"])
             df = df.sample(frac=1)
@@ -195,13 +139,6 @@ class data_name():
         y=list(map(lambda d: d, list(df["class"])))
         return x, y
 
-# a=data_name("./data/data/input",100)
-#
-# text,label=a.get_train_example()
-# print(text,label)
-
-
-
 def batch_iter(data, batch_size, num_epochs=None, shuffle=True):
     """
     Generates a batch iterator for a dataset.
@@ -225,16 +162,4 @@ def batch_iter(data, batch_size, num_epochs=None, shuffle=True):
 
 def write_csv():
     pass
-
-
-# def batch_iter(inputs, outputs, batch_size, num_epochs):
-#     inputs = np.array(inputs)
-#     outputs = np.array(outputs)
-#
-#     num_batches_per_epoch = (len(inputs) - 1) // batch_size + 1
-#     for epoch in range(num_epochs):
-#         for batch_num in range(num_batches_per_epoch):
-#             start_index = batch_num * batch_size
-#             end_index = min((batch_num + 1) * batch_size, len(inputs))
-#             yield inputs[start_index:end_index], outputs[start_index:end_index]
 

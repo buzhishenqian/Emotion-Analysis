@@ -10,16 +10,6 @@ from model.word_rnn import WordRNN
 from sklearn.metrics import classification_report
 from sklearn.metrics import accuracy_score
 
-
-# y_true = [1,2,3,4]
-# y_pred = [1,1,1,4]
-# target_name = ['class0','class1','class2','class3']
-# f1=classification_report(y_true, y_pred, target_names=target_name)
-# print(type(f1))
-
-
-# exit()
-
 # Parameters
 # ==================================================
 
@@ -33,13 +23,6 @@ tf.flags.DEFINE_bool("do_train",False,'')
 tf.flags.DEFINE_bool("do_dev",False,'')
 tf.flags.DEFINE_bool("do_predict",True,'')
 tf.flags.DEFINE_bool("restore",False,'')
-
-# Model Hyperparameters
-# tf.flags.DEFINE_integer("embedding_dim", 128, "Dimensionality of character embedding (default: 128)")
-# tf.flags.DEFINE_string("filter_sizes", "3,4,5", "Comma-separated filter sizes (default: '3,4,5')")
-# tf.flags.DEFINE_integer("num_filters", 128, "Number of filters per filter size (default: 128)")
-# tf.flags.DEFINE_float("dropout_keep_prob", 0.5, "Dropout keep probability (default: 0.5)")
-# tf.flags.DEFINE_float("l2_reg_lambda", 0.0, "L2 regularization lambda (default: 0.0)")
 
 # Training parameters
 tf.flags.DEFINE_integer("batch_size", 64, "Batch Size (default: 64)")
@@ -58,13 +41,9 @@ FLAGS = tf.flags.FLAGS
 #     print("{}={}".format(attr.upper(), value))
 # print("")
 
-
 tf.logging.set_verbosity(tf.logging.INFO)
 tf.logging.info("****FLAGS****")
 tf.logging.info(FLAGS.flag_values_dict())
-
-
-
 
 qinggan_data = data_name(FLAGS.data_dir, 100)
 vocab_size=qinggan_data.word_dict_zize
@@ -75,14 +54,6 @@ with tf.Session() as sess:
         model = WordCNN(FLAGS.model_dir,4,vocab_size)
     elif FLAGS.model == "word_rnn":
         model = WordRNN(4,vocab_size)
-    # elif FLAGS.model == "vd_cnn":
-    #     model = VDCNN(alphabet_size, CHAR_MAX_LEN, NUM_CLASS)
-    # elif FLAGS.model == "word_rnn":
-    #     model = WordRNN(vocabulary_size, WORD_MAX_LEN, NUM_CLASS)
-    # elif FLAGS.model == "att_rnn":
-    #     model = AttentionRNN(vocabulary_size, WORD_MAX_LEN, NUM_CLASS)
-    # elif FLAGS.model == "rcnn":
-    #     model = RCNN(vocabulary_size, WORD_MAX_LEN, NUM_CLASS)
     else:
         raise NotImplementedError()
 
@@ -103,7 +74,6 @@ with tf.Session() as sess:
         saver.restore(sess, checkpoint_file)
         tf.logging.info("****restore model****")
         tf.logging.info("restore path:%s",checkpoint_file)
-
 
     def train_step(x_batch, y_batch):
         """
@@ -202,13 +172,4 @@ with tf.Session() as sess:
         x_test, y_test = qinggan_data.get_valid_example()
         tf.logging.info("****do_predict****")
         predictions=test_step(x_test)
-
-
-
-# def main(argv=None):
-#     tf.logging.set_verbosity(tf.logging.INFO)
-#     x_train, y_train, x_dev, y_dev, vocab_size = preprocess()
-#     train(x_train, y_train, x_dev, y_dev, vocab_size)
-#
-# if __name__ == '__main__':
-#     tf.app.run()
+        
